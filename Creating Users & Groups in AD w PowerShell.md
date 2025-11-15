@@ -15,6 +15,9 @@ This guide explains each command in detail so even someone with zero IT experien
 PowerShell must be opened in Administrator mode before modifying Active Directory.
 Administrator mode provides elevated permission, similar to holding a master key that unlocks restricted areas of the building.
 
+<img width="1126" height="842" alt="image" src="https://github.com/user-attachments/assets/c9a6fc55-47c9-45ac-8391-6022c7d0e942" />
+
+
 ## Step 2: Creating Organizational Units (OUs)
 Organizational Units act as department folders. Three departments are created: HR, IT, and Finance.
 
@@ -36,6 +39,10 @@ New-ADOrganizationalUnit -Name "IT_Department"
 New-ADOrganizationalUnit -Name "Finance_Department"
 ```
 
+<img width="1032" height="773" alt="image" src="https://github.com/user-attachments/assets/42e76b6d-10f6-4240-a3a5-f5417b84d934" />
+
+
+
 ## Step 3: Creating User Accounts
 User accounts represent employees in the company.
 
@@ -54,6 +61,9 @@ New-ADUser "Petter Griffin"
 New-ADUser "Thomas Jefferson"
 New-ADUser "John Cena"
 ```
+
+<img width="1020" height="427" alt="image" src="https://github.com/user-attachments/assets/446d1e75-1d6b-408f-a424-40a0f094c836" />
+
 
 ## Step 4: Retrieving the Distinguished Name (DN)
 A Distinguished Name is a full address that shows where an object is located inside Active Directory.
@@ -74,6 +84,10 @@ Get-ADUser -Identity <UserName> | Select-Object DistinguishedName
 Get-ADUser -Identity "Petter Griffin" | Select-Object DistinguishedName
 ```
 
+<img width="1017" height="116" alt="image" src="https://github.com/user-attachments/assets/fe6c3ceb-a36e-4d9d-823e-772d57948ea2" />
+
+
+
 ## Step 5: Moving Users Into Their Correct OUs
 Users are placed into the correct department folders.
 
@@ -93,6 +107,63 @@ Move-ADObject -Identity "CN=Petter Griffin,CN=Users,DC=david,DC=local" -TargetPa
 Move-ADObject -Identity "CN=Thomas Jefferson,CN=Users,DC=david,DC=local" -TargetPath "OU=Finance_Department,DC=david,DC=local"
 Move-ADObject -Identity "CN=John Cena,CN=Users,DC=david,DC=local" -TargetPath "OU=HR_Department,DC=david,DC=local"
 ```
+
+
+<img width="1026" height="447" alt="image" src="https://github.com/user-attachments/assets/fb1ee9af-a81f-4a42-b6d0-a06d4427aa2f" />
+
+
+
+
+
+
+
+
+
+---
+### Verifying That Users Were Successfully Moved Into Their Correct Organizational Units
+
+Once a user is moved into a new department folder, it is important to verify that the move was completed correctly. Active Directory does not provide a confirmation message after moving an object, so checking the user’s location ensures that the directory structure is accurate and organized.
+
+The following command is used to confirm the move:
+`Get-ADUser -Identity "Petter Griffin" | Select-Object Name, DistinguishedName
+`
+
+**Purpose of This Verification Command**
+
+Get-ADUser retrieves the user’s account information from Active Directory.
+
+-Identity "Petter Griffin" specifies the account being checked.
+
+The pipe symbol | passes the user’s information into the next command.
+
+Select-Object Name, DistinguishedName displays only the user’s name and full AD path.
+
+***Why This Matters***
+
+The DistinguishedName shows the exact location of the user inside Active Directory.
+A correct move will show the department’s OU in the path. For example:
+
+`CN=Petter Griffin,OU=IT_Department,DC=david,DC=local
+`
+This confirms that:
+
+The user is no longer inside the default Users container
+
+The user now resides inside the correct department OU
+
+The move was executed successfully
+
+Verifying the Distinguished Name is a fundamental practice when managing Active Directory. It ensures accuracy, keeps the directory clean, and prevents misplacement of accounts as the organization grows.
+
+
+
+<img width="1027" height="103" alt="image" src="https://github.com/user-attachments/assets/5dae8aa0-cfb3-4f87-9ee2-cdac2122b9a3" />
+
+---
+
+<img width="1030" height="427" alt="image" src="https://github.com/user-attachments/assets/bb2ea19a-1c36-468f-8238-de837e92a797" />
+
+---
 
 ## Step 6: Creating Security Groups
 Security groups allow shared permissions for department members.
@@ -115,6 +186,10 @@ New-ADGroup -Name "HR_Security_Group_Team" -GroupScope Global -GroupCategory Sec
 New-ADGroup -Name "Finance_Security_Group_Team" -GroupScope Global -GroupCategory Security -Path "OU=Finance_Department,DC=david,DC=local"
 ```
 
+
+<img width="1022" height="180" alt="image" src="https://github.com/user-attachments/assets/12dac703-20cc-4420-b9d5-ece0a1562f08" />
+
+
 ## Step 7: Adding Users to Security Groups
 Each user is added to the correct team.
 
@@ -135,6 +210,13 @@ Add-ADGroupMember -Identity "Finance_Security_Group_Team" -Members "Thomas Jeffe
 Add-ADGroupMember -Identity "IT_Admins" -Members "Petter Griffin"
 ```
 
+<img width="1020" height="50" alt="image" src="https://github.com/user-attachments/assets/2ece098f-8a82-4c98-ba13-2f7dcdea90b4" />
+
+---
+
+<img width="1020" height="85" alt="image" src="https://github.com/user-attachments/assets/3c699503-cd8e-4bd9-82fa-ddf3beda6a8b" />
+
+
 ## Step 8: Verification
 Verifying ensures all users are correctly placed.
 
@@ -142,6 +224,16 @@ Verifying ensures all users are correctly placed.
 ```
 Get-ADUser -Identity <UserName> | Select-Object Name, DistinguishedName
 ```
+
+<img width="1003" height="417" alt="image" src="https://github.com/user-attachments/assets/9d03556c-50a7-4a31-b750-6b27c4dc35a9" />
+
+---
+
+<img width="1035" height="371" alt="image" src="https://github.com/user-attachments/assets/6009c6bd-6655-4046-9521-9febed8088bc" />
+
+
+
+
 
 ## Final Result
 The directory now contains:
